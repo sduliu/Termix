@@ -60,7 +60,7 @@
 }
 .ops-primary {
   background: var(--accent-brand);
-  color: white;
+  color: var(--background);
   border-color: transparent;
 }
 .ops-secondary,
