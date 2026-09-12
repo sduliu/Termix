@@ -1407,7 +1407,7 @@ export function UserProfilePanel({
   const canChangePasword = !isOidc || isDualAuth;
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 p-3">
+    <div className="termix-resource-panel termix-user-profile-panel mx-auto flex w-full max-w-5xl flex-col gap-2 p-3">
       <NewApiKeyDialog
         open={newKeyOpen}
         onOpenChange={setNewKeyOpen}

@@ -540,3 +540,157 @@ html.fs-xl {
 .terminal-toolbar-collapsed-shell {
   position: relative;
 }
+
+/* Operations-console visual language shared by every real feature surface. */
+.termix-app-shell [data-slot="card"] {
+  border-color: var(--border);
+  border-radius: 7px;
+  box-shadow: none;
+}
+
+.termix-app-shell [data-slot="button"] {
+  border-radius: 5px;
+}
+
+.termix-app-shell [data-slot="input"],
+.termix-app-shell textarea,
+.termix-app-shell select {
+  border-radius: 5px;
+}
+
+.termix-app-shell [data-slot="tabs-list"] {
+  border-radius: 5px;
+}
+
+.termix-app-shell [data-slot="tabs-trigger"] {
+  border-radius: 4px;
+}
+
+.termix-app-shell [data-slot="dialog-content"],
+.termix-app-shell [data-slot="popover-content"],
+.termix-app-shell [data-slot="dropdown-menu-content"] {
+  border-radius: 7px;
+  border-color: var(--border);
+  box-shadow: 0 18px 45px rgb(0 0 0 / 25%);
+}
+
+.termix-app-shell .bg-sidebar {
+  background-color: var(--sidebar);
+}
+
+.termix-app-shell .border-border {
+  border-color: var(--border);
+}
+
+.termix-workspace {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--background) 92%, white) 0%,
+    var(--background) 180px
+  );
+}
+
+.termix-sidebar {
+  background: color-mix(in srgb, var(--sidebar) 94%, black);
+}
+
+.termix-sidebar-header {
+  background: color-mix(in srgb, var(--sidebar) 86%, white);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--border) 75%, transparent);
+}
+
+.termix-sidebar [class*="overflow-y-auto"],
+.termix-workspace [class*="overflow-y-auto"] {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--muted-foreground) 28%, transparent)
+    transparent;
+}
+
+.termix-sidebar [class*="overflow-y-auto"]::-webkit-scrollbar,
+.termix-workspace [class*="overflow-y-auto"]::-webkit-scrollbar {
+  width: 5px;
+}
+
+.termix-sidebar [class*="overflow-y-auto"]::-webkit-scrollbar-thumb,
+.termix-workspace [class*="overflow-y-auto"]::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--muted-foreground) 28%, transparent);
+  border-radius: 3px;
+}
+
+.termix-sidebar input,
+.termix-sidebar textarea,
+.termix-sidebar select {
+  background-color: color-mix(in srgb, var(--background) 72%, var(--sidebar));
+}
+
+.termix-sidebar [class*="border-b"],
+.termix-sidebar [class*="border-t"] {
+  border-color: color-mix(in srgb, var(--border) 82%, transparent);
+}
+
+.termix-resource-panel {
+  container-type: inline-size;
+}
+
+.termix-resource-toolbar {
+  background: color-mix(in srgb, var(--sidebar) 82%, var(--background));
+}
+
+.termix-resource-toolbar > div:first-child {
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--background) 78%, var(--sidebar));
+}
+
+.termix-resource-panel [role="treeitem"],
+.termix-resource-panel [data-state="open"] {
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.termix-resource-panel button:focus-visible,
+.termix-resource-panel input:focus-visible,
+.termix-resource-panel select:focus-visible,
+.termix-resource-panel textarea:focus-visible {
+  outline: 1px solid color-mix(in srgb, var(--accent-brand) 70%, transparent);
+  outline-offset: 1px;
+}
+
+.termix-feature-panel {
+  background: var(--background);
+}
+
+.termix-feature-toolbar {
+  background: color-mix(in srgb, var(--background) 88%, var(--sidebar));
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--border) 70%, transparent);
+}
+
+.termix-file-manager [data-slot="card"] {
+  background: color-mix(in srgb, var(--card) 92%, var(--background));
+}
+
+.termix-ai-panel textarea {
+  background: color-mix(in srgb, var(--background) 82%, var(--sidebar));
+}
+
+.termix-ai-panel [data-slot="scroll-area"] {
+  background: color-mix(in srgb, var(--background) 96%, var(--sidebar));
+}
+
+.termix-alerts-panel > div:first-child,
+.termix-session-logs-panel > div:first-child,
+.termix-automations-panel > div:first-child {
+  background: color-mix(in srgb, var(--background) 88%, var(--sidebar));
+}
+
+.termix-admin-settings-panel,
+.termix-user-profile-panel {
+  background: color-mix(in srgb, var(--background) 94%, var(--sidebar));
+}
+
+.termix-admin-settings-panel [class*="bg-card"],
+.termix-user-profile-panel [class*="bg-card"] {
+  border-radius: 7px;
+  border-color: color-mix(in srgb, var(--border) 88%, transparent);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
+}

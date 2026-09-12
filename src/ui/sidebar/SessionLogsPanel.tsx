@@ -374,7 +374,7 @@ export function SessionLogsPanel() {
     const hostLabel =
       viewLog.hostName ?? viewLog.hostIp ?? `Host ${viewLog.hostId}`;
     return (
-      <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+      <div className="termix-resource-panel termix-session-logs-panel flex flex-col flex-1 min-h-0 overflow-hidden">
         {/* Viewer header */}
         <div className="flex items-center gap-2 px-2 py-2 border-b border-border/60 bg-muted/20 shrink-0">
           <button

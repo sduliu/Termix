@@ -1919,7 +1919,7 @@ export function SnippetsPanel({
 
   return (
     <>
-      <div className="flex flex-col gap-3 p-3">
+      <div className="termix-resource-panel termix-snippets-panel flex flex-col gap-3 p-3">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold">
             {t("newUi.sidebar.snippets.title")}

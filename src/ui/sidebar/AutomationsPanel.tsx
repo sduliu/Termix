@@ -309,7 +309,7 @@ export function AutomationsPanel({
       : "";
 
     return (
-      <div className="flex flex-col h-full min-h-0">
+      <div className="termix-resource-panel termix-automations-panel flex flex-col h-full min-h-0">
         <button
           onClick={closeEditor}
           className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors border-b border-border/50 shrink-0"
@@ -396,7 +396,7 @@ export function AutomationsPanel({
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="termix-resource-panel termix-automations-panel flex flex-col h-full">
       <div className="flex items-center gap-1 p-2 border-b border-border">
         {(["automations", "runs", "channels"] as PanelTab[]).map((key) => (
           <Button

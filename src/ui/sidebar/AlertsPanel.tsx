@@ -172,7 +172,7 @@ export function AlertsPanel() {
   const unreadCount = firings.filter((f) => !f.acknowledged).length;
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="termix-resource-panel termix-alerts-panel flex flex-col h-full">
       {/* Tab strip */}
       <div className="flex shrink-0 border-b border-border">
         {(["firings", "rules", "channels"] as PanelTab[]).map((t_) => (

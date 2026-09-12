@@ -2558,8 +2558,8 @@ export function AppShell({
 
   // Sidebar header — shared
   const sidebarHeader = (
-    <div className="flex flex-row items-center border-b border-border h-12.5 shrink-0">
-      <span className="flex-1 min-w-0 whitespace-nowrap text-base font-bold tracking-tight text-foreground px-3">
+    <div className="termix-sidebar-header flex flex-row items-center border-b border-border h-12.5 shrink-0">
+      <span className="flex-1 min-w-0 whitespace-nowrap text-[13px] font-semibold tracking-tight text-foreground px-3">
         {sidebarTitle(railView)}
       </span>
       {!isMobile && PROMOTABLE_IDS.includes(railView) && (
@@ -2660,7 +2660,7 @@ export function AppShell({
   return (
     <ServerStatusProvider isAuthenticated={!!username}>
       <div
-        className="flex flex-col w-screen bg-background"
+        className="termix-app-shell flex flex-col w-screen bg-background"
         style={{ height: "100dvh" }}
       >
         {isElectron() && (
@@ -2699,7 +2699,7 @@ export function AppShell({
           {/* Desktop: inline resizable sidebar */}
           {!isMobile && (
             <div
-              className={`${settingsFullscreen ? "fixed inset-0 z-50" : "relative"} flex flex-col min-h-0 bg-sidebar shrink-0 overflow-hidden ${sidebarOpen ? `border-r transition-colors ${sidebarDragging ? "border-accent-brand/60" : "border-border"}` : ""}`}
+              className={`${settingsFullscreen ? "fixed inset-0 z-50" : "relative"} termix-sidebar flex flex-col min-h-0 bg-sidebar shrink-0 overflow-hidden ${sidebarOpen ? `border-r transition-colors ${sidebarDragging ? "border-accent-brand/60" : "border-border"}` : ""}`}
               style={{
                 width: settingsFullscreen
                   ? "100vw"
@@ -2743,7 +2743,7 @@ export function AppShell({
           <div
             inert={settingsFullscreen ? true : undefined}
             aria-hidden={settingsFullscreen || undefined}
-            className={`relative flex flex-col flex-1 min-w-0 overflow-hidden transition-all duration-200 ${!isMobile && !sidebarOpen ? "pl-6" : ""}`}
+            className={`termix-workspace relative flex flex-col flex-1 min-w-0 overflow-hidden transition-all duration-200 ${!isMobile && !sidebarOpen ? "pl-6" : ""}`}
           >
             {!isMobile && !sidebarOpen && (
               <button

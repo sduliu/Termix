@@ -98,9 +98,9 @@ export function CredentialsPanel({
   }
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+    <div className="termix-resource-panel termix-credentials-panel flex flex-col flex-1 min-h-0 overflow-hidden">
       {!managerEditing && (
-        <div className="flex flex-col px-2 py-1.5 shrink-0 border-b border-border/60 gap-1.5">
+        <div className="termix-resource-toolbar flex flex-col px-2 py-1.5 shrink-0 border-b border-border/60 gap-1.5">
           <div className="flex items-center gap-2 px-2.5 h-7 bg-muted/60 border border-border/60 rounded-sm">
             <Search className="size-3 text-muted-foreground/60 shrink-0" />
             <input

@@ -483,7 +483,7 @@ export function ConnectionsPanel({
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="termix-resource-panel termix-connections-panel flex flex-col">
       <div className="relative px-3 py-2 border-b border-border/60">
         <Search className="absolute left-5.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground/50 pointer-events-none" />
         <Input

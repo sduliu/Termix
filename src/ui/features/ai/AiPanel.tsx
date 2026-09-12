@@ -328,12 +328,12 @@ export function AiPanel({ activeTab }: { activeTab?: string | null }) {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="termix-feature-panel termix-ai-panel flex h-full flex-col">
       {/*
         The panel also lives in the narrow sidebar, so the title and the
         provider picker get their own rows rather than competing for one line.
       */}
-      <div className="border-b border-border">
+      <div className="termix-feature-toolbar border-b border-border">
         <div className="flex items-center gap-2 px-3 py-2">
           <Sparkles size={16} className="shrink-0" />
           <span className="truncate text-sm font-medium">{t("ai.title")}</span>

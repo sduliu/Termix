@@ -1107,7 +1107,7 @@ export function AdminSettingsPanel({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 p-3 flex-1 min-h-0 overflow-y-auto">
+    <div className="termix-resource-panel termix-admin-settings-panel mx-auto flex w-full max-w-5xl flex-col gap-2 p-3 flex-1 min-h-0 overflow-y-auto">
       <AdminGeneralSettingsSection
         open={openSections.has("general")}
         onToggle={() => toggle("general")}

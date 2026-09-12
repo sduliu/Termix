@@ -3209,7 +3209,7 @@ function FileManagerContent({
   }
 
   return (
-    <div className="h-full flex flex-col bg-background relative overflow-hidden isolate">
+    <div className="termix-feature-panel termix-file-manager h-full flex flex-col bg-background relative overflow-hidden isolate">
       <div className="h-full w-full flex flex-col min-h-0">
         <FileManagerToolbar
           t={t}
