@@ -1,5 +1,5 @@
 import { getErrorMessage } from "../../lib/error-message.js";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { authApi } from "@/main-axios";
 import type { AiProposal } from "@/api/ai-api";
 
@@ -48,8 +48,17 @@ const INITIAL: StreamState = {
 export function useAiStream() {
   const [state, setState] = useState<StreamState>(INITIAL);
   const abortRef = useRef<AbortController | null>(null);
+  useEffect(
+    () => () => {
+      abortRef.current?.abort();
+      abortRef.current = null;
+    },
+    [],
+  );
 
   const reset = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
     setState(INITIAL);
   }, []);
 
@@ -84,6 +93,15 @@ export function useAiStream() {
       let conversationId = input.conversationId ?? null;
       let replyText = "";
       let toolSequence = 0;
+      let completed = false;
+      let failed = false;
+      let timedOut = false;
+      const timeout = () => {
+        timedOut = true;
+        controller.abort();
+      };
+      let idleTimer = setTimeout(timeout, 120_000);
+      let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
 
       try {
         const response = await fetch(streamUrl(), {
@@ -100,6 +118,7 @@ export function useAiStream() {
           }),
         });
 
+        if (abortRef.current !== controller) return;
         if (!response.ok) {
           let message = "The assistant could not be reached";
           try {
@@ -107,11 +126,12 @@ export function useAiStream() {
           } catch {
             // Keep the generic message.
           }
+          if (abortRef.current !== controller) return;
           setState((prev) => ({ ...prev, streaming: false, error: message }));
           return;
         }
 
-        const reader = response.body?.getReader();
+        reader = response.body?.getReader();
         if (!reader) {
           setState((prev) => ({
             ...prev,
@@ -124,8 +144,9 @@ export function useAiStream() {
         const decoder = new TextDecoder();
         let buffer = "";
 
-        while (true) {
+        while (!completed && !failed) {
           const { done, value } = await reader.read();
+          if (abortRef.current !== controller) return;
           if (done) break;
 
           buffer += decoder.decode(value, { stream: true });
@@ -144,6 +165,9 @@ export function useAiStream() {
             } catch {
               continue;
             }
+            // Transport heartbeats do not count as model progress.
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(timeout, 120_000);
 
             if (event.type === "conversation") {
               conversationId = event.conversationId;
@@ -192,16 +216,36 @@ export function useAiStream() {
                 proposals: [...prev.proposals, event.proposal],
               }));
             } else if (event.type === "error") {
+              failed = true;
               setState((prev) => ({ ...prev, error: event.message }));
+              break;
+            } else if (event.type === "done") {
+              completed = true;
+              break;
             }
           }
         }
 
-        setState((prev) => ({ ...prev, streaming: false }));
-        input.onComplete?.(conversationId, replyText);
+        setState((prev) => ({
+          ...prev,
+          streaming: false,
+          error: failed
+            ? prev.error
+            : !completed
+              ? "The assistant connection closed before the response completed. Please retry."
+              : prev.error,
+        }));
+        if (completed && !failed) input.onComplete?.(conversationId, replyText);
       } catch (error) {
+        if (abortRef.current !== controller) return;
         if (controller.signal.aborted) {
-          setState((prev) => ({ ...prev, streaming: false }));
+          setState((prev) => ({
+            ...prev,
+            streaming: false,
+            error: timedOut
+              ? "The assistant made no progress for 2 minutes. Check the model or API endpoint and retry."
+              : prev.error,
+          }));
           return;
         }
         setState((prev) => ({
@@ -210,7 +254,9 @@ export function useAiStream() {
           error: getErrorMessage(error, "The assistant stopped unexpectedly"),
         }));
       } finally {
-        abortRef.current = null;
+        clearTimeout(idleTimer);
+        void reader?.cancel().catch(() => {});
+        if (abortRef.current === controller) abortRef.current = null;
       }
     },
     [],

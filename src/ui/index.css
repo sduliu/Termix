@@ -54,7 +54,7 @@
 @custom-variant gruvbox (&:is(.gruvbox *));
 
 @theme inline {
-  --font-heading: var(--font-mono);
+  --font-heading: var(--font-ui);
   --font-mono: "JetBrains Mono Variable", monospace;
   --color-accent-brand: var(--accent-brand);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -100,24 +100,25 @@
 }
 
 :root {
-  --accent-brand: #f59145;
-  --background: oklch(1 0 0);
+  --accent-brand: #3569e8;
+  --font-ui: "Inter", "Segoe UI Variable", "Segoe UI", sans-serif;
+  --background: #f7f9fb;
   --foreground: oklch(0.1802 0.0043 128.73);
-  --card: oklch(1 0 0);
+  --card: #ffffff;
   --card-foreground: oklch(0.1802 0.0043 128.73);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.1802 0.0043 128.73);
   --primary: oklch(0.2115 0.0042 128.68);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
+  --secondary: #eef2f6;
   --secondary-foreground: oklch(0.2115 0.0042 128.68);
-  --muted: oklch(0.97 0 0);
+  --muted: #eef2f6;
   --muted-foreground: oklch(0.44 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.2115 0.0042 128.68);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  --border: #dce3ea;
+  --input: #dce3ea;
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
@@ -125,51 +126,52 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --surface: oklch(0.97 0 0);
-  --sidebar: oklch(0.985 0 0);
+  --surface: #eef2f6;
+  --sidebar: #f0f3f6;
   --sidebar-foreground: oklch(0.1802 0.0043 128.73);
   --sidebar-primary: oklch(0.2115 0.0042 128.68);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent: #e5edf8;
   --sidebar-accent-foreground: oklch(0.2115 0.0042 128.68);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
-  --background: oklch(0.155 0.004 128.73);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.004 128.68);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.004 128.68);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.2115 0.0042 128.68);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --surface: oklch(0.185 0.004 128.73);
-  --surface-dim: oklch(0.165 0.003 128.73);
-  --muted: oklch(0.255 0 0);
-  --muted-foreground: oklch(0.72 0 0);
-  --accent: oklch(0.255 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --accent-brand: #79a9ff;
+  --background: #0d131a;
+  --foreground: #dce5ef;
+  --card: #151e27;
+  --card-foreground: #dce5ef;
+  --popover: #18222d;
+  --popover-foreground: #dce5ef;
+  --primary: #e6edf5;
+  --primary-foreground: #111820;
+  --secondary: #1b2732;
+  --secondary-foreground: #dce5ef;
+  --surface: #131b24;
+  --surface-dim: #0a1016;
+  --muted: #1a2631;
+  --muted-foreground: #8e9eaf;
+  --accent: #1d3047;
+  --accent-foreground: #e7f0fb;
+  --destructive: #e26d78;
+  --border: rgba(210, 225, 240, 0.14);
+  --input: rgba(210, 225, 240, 0.18);
+  --ring: #79a9ff;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.195 0.004 128.68);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.255 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar: #111a23;
+  --sidebar-foreground: #dce5ef;
+  --sidebar-primary: #79a9ff;
+  --sidebar-primary-foreground: #101821;
+  --sidebar-accent: #1b2a3a;
+  --sidebar-accent-foreground: #e7f0fb;
+  --sidebar-border: rgba(210, 225, 240, 0.13);
+  --sidebar-ring: #79a9ff;
 }
 
 /* ── Dracula ────────────────────────────────────────────────── */
@@ -472,10 +474,11 @@
     @apply overflow-hidden;
   }
   body {
-    @apply bg-background text-foreground font-mono;
+    @apply bg-background text-foreground;
+    font-family: var(--font-ui);
   }
   html {
-    @apply font-mono;
+    font-family: var(--font-ui);
   }
 }
 

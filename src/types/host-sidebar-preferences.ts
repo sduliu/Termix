@@ -26,7 +26,8 @@ export type SortKey =
 
 export type StatusColorScheme = "accent" | "status";
 
-export type HostGroupKey = "folder" | "tag" | "status" | "protocol" | "auth";
+export type HostGroupKey =
+  "none" | "folder" | "tag" | "status" | "protocol" | "auth";
 
 export type HostDensity = "comfortable" | "compact";
 
@@ -59,6 +60,7 @@ export interface HostSidebarPreferences {
 }
 
 const GROUP_KEYS: HostGroupKey[] = [
+  "none",
   "folder",
   "tag",
   "status",

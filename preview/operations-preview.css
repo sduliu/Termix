@@ -1,0 +1,117 @@
+.preview-shell {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 188px minmax(0, 1fr);
+  color: var(--foreground);
+  background: var(--background);
+  font-family: "Segoe UI", sans-serif;
+}
+.preview-nav {
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+  padding: 24px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.preview-brand {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 22px;
+}
+.preview-brand img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+.preview-workspace {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 9px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+.preview-nav nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.preview-nav nav button,
+.preview-nav-bottom button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  text-align: left;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.preview-nav nav .active {
+  background: var(--muted);
+  color: var(--foreground);
+}
+.preview-nav-bottom {
+  margin-top: auto;
+}
+.preview-nav-bottom span {
+  display: block;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  padding: 14px 10px 0;
+}
+.preview-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.preview-tabs {
+  height: 46px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.preview-tabs span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+  border-right: 1px solid var(--border);
+}
+.preview-tab-muted {
+  color: var(--muted-foreground);
+}
+.preview-main .ops-console {
+  flex: 1;
+  min-height: 0;
+}
+.preview-notice {
+  padding: 8px 24px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+@media (max-width: 700px) {
+  .preview-shell {
+    grid-template-columns: minmax(0, 1fr);
+    height: 100dvh;
+  }
+  .preview-nav {
+    display: none;
+  }
+  .preview-tabs span {
+    padding: 0 16px;
+  }
+  .preview-notice {
+    padding: 8px 16px;
+  }
+}

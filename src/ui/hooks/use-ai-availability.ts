@@ -33,11 +33,13 @@ export function useAiAvailability(): AiAvailability {
 
   useEffect(() => {
     let cancelled = false;
+    let generation = 0;
     const refresh = () => {
+      const current = ++generation;
       import("@/api/ai-api")
         .then(({ getAiStatus }) => getAiStatus())
         .then((status) => {
-          if (cancelled) return;
+          if (cancelled || current !== generation) return;
           setState({
             globallyEnabled: status.globallyEnabled,
             userEnabled: status.globallyEnabled && status.enabled,
@@ -45,21 +47,21 @@ export function useAiAvailability(): AiAvailability {
           });
         })
         .catch(() => {
-          if (!cancelled)
-            setState({
-              globallyEnabled: false,
-              userEnabled: false,
-              loaded: true,
-            });
+          // A transient status failure is not a revocation. Keep the last
+          // confirmed gates; actual requests still enforce server permissions.
+          if (!cancelled && current === generation)
+            setState((previous) => ({ ...previous, loaded: true }));
         });
     };
     refresh();
     window.addEventListener(AI_STATUS_CHANGED_EVENT, refresh);
+    window.addEventListener("focus", refresh);
     // The profile toggle and onboarding still fire this older event.
     window.addEventListener("hiddenRailTabsChanged", refresh);
     return () => {
       cancelled = true;
       window.removeEventListener(AI_STATUS_CHANGED_EVENT, refresh);
+      window.removeEventListener("focus", refresh);
       window.removeEventListener("hiddenRailTabsChanged", refresh);
     };
   }, []);

@@ -698,7 +698,7 @@ router.post(
       }, 30000);
 
       const abort = new AbortController();
-      req.on("close", () => {
+      res.on("close", () => {
         clearInterval(heartbeat);
         abort.abort();
       });
@@ -741,6 +741,8 @@ router.post(
           },
           signal: abort.signal,
         })) {
+          // Only the final, persisted response completes the client stream.
+          if (event.type === "done") continue;
           if (event.type === "assistant_message") {
             assistantText = event.content;
             // Kept so the next message replays them verbatim. Gemini rejects a

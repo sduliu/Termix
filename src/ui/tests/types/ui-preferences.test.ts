@@ -147,6 +147,17 @@ describe("resolveArea", () => {
 });
 
 describe("PRESETS.balanced", () => {
+  it("keeps personal-use navigation including AI available in Simple", () => {
+    for (const id of [
+      "hosts",
+      "credentials",
+      "connections",
+      "snippets",
+      "ai",
+    ]) {
+      expect(PRESETS.simple.rail.hiddenTabs).not.toContain(id);
+    }
+  });
   // Balanced is the compatibility contract: it must equal the behavior that
   // shipped before presets existed, or every existing user sees a changed UI.
   it("matches the pre-preset defaults", () => {

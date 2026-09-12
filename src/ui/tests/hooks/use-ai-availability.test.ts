@@ -16,6 +16,37 @@ afterEach(() => {
 });
 
 describe("useAiAvailability", () => {
+  it("keeps confirmed visibility on a transient failure", async () => {
+    getAiStatus.mockResolvedValue({ globallyEnabled: true, enabled: true });
+    const { result } = renderHook(() => useAiAvailability());
+    await waitFor(() => expect(result.current.userEnabled).toBe(true));
+    getAiStatus.mockRejectedValue(new Error("offline"));
+    await act(async () => {
+      notifyAiStatusChanged();
+    });
+    expect(result.current.userEnabled).toBe(true);
+  });
+
+  it("ignores stale responses after a newer permission revocation", async () => {
+    let resolveOld: (status: unknown) => void;
+    getAiStatus.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveOld = resolve;
+        }),
+    );
+    const { result } = renderHook(() => useAiAvailability());
+    await waitFor(() => expect(getAiStatus).toHaveBeenCalledOnce());
+    getAiStatus.mockResolvedValue({ globallyEnabled: false, enabled: false });
+    await act(async () => {
+      notifyAiStatusChanged();
+    });
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    await act(async () => {
+      resolveOld({ globallyEnabled: true, enabled: true });
+    });
+    expect(result.current.userEnabled).toBe(false);
+  });
   it("starts hidden and unloaded before the status answers", () => {
     getAiStatus.mockReturnValue(new Promise(() => {}));
     const { result } = renderHook(() => useAiAvailability());

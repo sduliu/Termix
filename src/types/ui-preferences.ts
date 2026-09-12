@@ -139,7 +139,13 @@ const PRESET_VALUES: UiPreset[] = ["simple", "balanced", "advanced", "custom"];
  * the app feel broken, so connections and snippets stay: snippets is the most
  * approachable power feature and connections is where troubleshooting starts.
  */
-const SIMPLE_RAIL_VISIBLE = ["hosts", "credentials", "connections", "snippets"];
+const SIMPLE_RAIL_VISIBLE = [
+  "hosts",
+  "credentials",
+  "connections",
+  "snippets",
+  "ai",
+];
 
 /** Every hideable rail view, mirroring HideableRailView in sidebar/AppRail.tsx. */
 const ALL_HIDEABLE_RAIL_VIEWS = [
@@ -210,7 +216,7 @@ export const PRESETS: Record<Exclude<UiPreset, "custom">, UiAreaPreferences> = {
       density: "comfortable",
       showTags: false,
       showResourceBars: false,
-      showStatusStripes: false,
+      showStatusStripes: true,
       // "always" permanently renders the management row and resource bars,
       // which is the wall of buttons the issue calls intimidating.
       trayTrigger: "actionsOnly",

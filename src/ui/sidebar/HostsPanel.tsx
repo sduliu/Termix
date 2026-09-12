@@ -106,6 +106,7 @@ function groupHosts(
 ): HostFolder {
   if (key === "folder") return tree;
   const hosts = flattenHosts(tree);
+  if (key === "none") return { name: "root", children: hosts };
   const groups = new Map<string, Host[]>();
   for (const host of hosts) {
     for (const name of hostGroupNames(host, key)) {
@@ -880,6 +881,7 @@ export function HostsPanel({
                     <DropdownMenuSubContent className="text-xs min-w-[150px]">
                       {(
                         [
+                          ["none", "GroupByNone"],
                           ["folder", "GroupByFolder"],
                           ["tag", "GroupByTag"],
                           ["status", "GroupByStatus"],

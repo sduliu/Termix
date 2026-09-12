@@ -294,7 +294,7 @@ export function AppRail({
   return (
     <div
       className="hidden md:flex flex-col items-stretch bg-sidebar border-r border-border shrink-0 overflow-hidden pt-2 gap-1 transition-[width] duration-200 min-h-0"
-      style={{ width: railExpanded ? 160 : 40 }}
+      style={{ width: railExpanded ? 188 : 48 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onContextMenu={(e) => {
@@ -317,7 +317,7 @@ export function AppRail({
             <div
               key={`sep-${i}`}
               className="mx-auto h-px bg-border my-0.5 shrink-0 transition-[width] duration-200"
-              style={{ width: railExpanded ? "calc(100% - 16px)" : 20 }}
+              style={{ width: railExpanded ? "calc(100% - 20px)" : 24 }}
             />
           ) : "tabType" in item ? (
             <button

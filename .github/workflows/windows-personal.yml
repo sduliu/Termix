@@ -1,0 +1,71 @@
+name: Windows Personal x64
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  installer:
+    runs-on: windows-2022
+    timeout-minutes: 60
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "24.15.0"
+          cache: npm
+      - name: Pin npm
+        run: npm install --global npm@11.12.1
+      - name: Install MSVC Spectre libraries for node-pty
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vsPath = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          if (-not $vsPath) { throw "Visual Studio C++ tools not found" }
+          $installer = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe"
+          $installArgs = @("modify", "--installPath", "`"$vsPath`"", "--add", "Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre", "--quiet", "--norestart", "--nocache")
+          $process = Start-Process -FilePath $installer -ArgumentList $installArgs -Wait -PassThru -WindowStyle Hidden
+          if ($process.ExitCode -notin @(0, 3010)) { throw "Spectre install failed: $($process.ExitCode)" }
+          $libraries = Get-ChildItem "$vsPath\VC\Tools\MSVC\*\lib\spectre\x64\*.lib" -ErrorAction SilentlyContinue
+          if (-not $libraries) { throw "x64 Spectre libraries not found" }
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Type check
+        run: npm run type-check
+      - name: Lint
+        run: npm run lint
+      - name: Focused regression tests
+        run: npx vitest run src/ui/tests/dashboard/OperationsConsole.test.tsx src/ui/tests/hooks/use-ai-availability.test.ts src/ui/tests/features/use-ai-stream.test.tsx src/ui/tests/types/ui-preferences.test.ts src/ui/tests/types/host-sidebar-preferences.test.ts src/ui/tests/contexts/apply-ui-preset.test.ts src/backend/tests/ai --no-file-parallelism
+      - name: Build application
+        run: npm run build
+      - name: Build unsigned NSIS x64 installer
+        run: npx electron-builder --win nsis --x64 --publish never
+      - name: Record build provenance
+        shell: pwsh
+        run: |
+          $artifact = "release/termix_windows_x64_nsis.exe"
+          if (-not (Test-Path $artifact)) { throw "Installer missing" }
+          $hash = (Get-FileHash $artifact -Algorithm SHA256).Hash
+          "$hash  termix_windows_x64_nsis.exe" | Set-Content release/SHA256SUMS.txt
+          @{
+            commit = (git rev-parse HEAD)
+            node = (node --version)
+            npm = (npm --version)
+            runner = $env:ImageOS
+            runnerVersion = $env:ImageVersion
+            lockfileSha256 = (Get-FileHash package-lock.json -Algorithm SHA256).Hash
+            signed = $false
+          } | ConvertTo-Json | Set-Content release/build-info.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: termix-windows-x64-nsis-${{ github.sha }}
+          path: |
+            release/termix_windows_x64_nsis.exe
+            release/SHA256SUMS.txt
+            release/build-info.json
+          if-no-files-found: error
+          retention-days: 14

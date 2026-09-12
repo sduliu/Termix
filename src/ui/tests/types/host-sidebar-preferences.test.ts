@@ -6,6 +6,13 @@ import {
 } from "@/types/host-sidebar-preferences";
 
 describe("defaultHostSidebarPreferences", () => {
+  it("persists the ungrouped personal host view", () => {
+    const preferences = sanitizeHostSidebarPreferences({ groupKey: "none" });
+    expect(
+      sanitizeHostSidebarPreferences(JSON.parse(JSON.stringify(preferences)))
+        .groupKey,
+    ).toBe("none");
+  });
   it("returns a fully populated default shape", () => {
     const defaults = defaultHostSidebarPreferences();
     expect(defaults).toEqual({

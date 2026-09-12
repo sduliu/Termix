@@ -1493,7 +1493,7 @@ export function AppShell({
       joinShareId?: string | null;
     },
   ) {
-    const tabId = `${host.name}-${type}-${Date.now()}`;
+    const tabId = `${host.id}-${host.name}-${type}-${Date.now()}`;
     const instanceId =
       restore?.instanceId ??
       (typeof crypto.randomUUID === "function"

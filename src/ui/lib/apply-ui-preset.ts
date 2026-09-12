@@ -9,6 +9,7 @@ import {
 import { PRESETS, type UiPreset } from "@/types/ui-preferences";
 import { sanitizeHostSidebarPreferences } from "@/types/host-sidebar-preferences";
 import { sanitizeCredentialSidebarPreferences } from "@/types/credential-sidebar-preferences";
+import { setRailPreference } from "@/sidebar/rail-preferences";
 
 /**
  * Seeding a preset into the stores that already own their settings.
@@ -70,6 +71,11 @@ export async function applyPresetSideEffects(
   preset: Exclude<UiPreset, "custom">,
 ): Promise<void> {
   const target = PRESETS[preset];
+  if (preset === "simple") {
+    setRailPreference("pinAppRail", true);
+    writeLocal("dashboardView", "operations");
+    window.dispatchEvent(new Event("dashboardViewChanged"));
+  }
 
   let storageMode: string | undefined;
   try {
@@ -94,6 +100,7 @@ export async function applyPresetSideEffects(
     const current = await getHostSidebarPreferences();
     const next = sanitizeHostSidebarPreferences({
       ...current,
+      groupKey: preset === "simple" ? "none" : current.groupKey,
       display: {
         ...current.display,
         density: target.hostList.density,

@@ -53,6 +53,7 @@ import { useTranslation } from "react-i18next";
 import { NetworkGraphCard } from "@/dashboard/cards/NetworkGraphCard";
 import { HomepagePreviewCard } from "@/dashboard/cards/HomepagePreviewCard";
 import { HomepageCanvas } from "@/features/homepage/HomepageCanvas";
+import { OperationsConsole } from "@/dashboard/OperationsConsole";
 
 // Side-effect imports so homepage widgets register themselves
 import "@/features/homepage/widgets/ServiceLinkWidget";
@@ -1274,16 +1275,18 @@ export function DashboardTab({
     setTimeout(() => setHomepageLinkCopied(false), 1500);
   };
 
-  const [dashboardView, setDashboardView] = useState<"dashboard" | "homepage">(
-    () => {
-      try {
-        return (localStorage.getItem("dashboardView") ?? "dashboard") as
-          "dashboard" | "homepage";
-      } catch {
-        return "dashboard";
-      }
-    },
-  );
+  const [dashboardView, setDashboardView] = useState<
+    "operations" | "dashboard" | "homepage"
+  >(() => {
+    try {
+      const saved = localStorage.getItem("dashboardView");
+      return saved === "dashboard" || saved === "homepage"
+        ? saved
+        : "operations";
+    } catch {
+      return "operations";
+    }
+  });
 
   useEffect(() => {
     try {
@@ -1294,6 +1297,14 @@ export function DashboardTab({
   }, [dashboardView]);
 
   const [editMode, setEditMode] = useState(false);
+  useEffect(() => {
+    const handler = () => {
+      if (localStorage.getItem("dashboardView") === "operations")
+        setDashboardView("operations");
+    };
+    window.addEventListener("dashboardViewChanged", handler);
+    return () => window.removeEventListener("dashboardViewChanged", handler);
+  }, []);
   const [dragState, setDragState] = useState<DragState>(null);
 
   const [mainWidthPct, setMainWidthPct] = useState(() => {
@@ -1323,6 +1334,8 @@ export function DashboardTab({
   }, [mainWidthPct]);
 
   const [hosts, setHosts] = useState<Host[]>([]);
+  const [hostsLoading, setHostsLoading] = useState(true);
+  const [hostsError, setHostsError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [uptimeFormatted, setUptimeFormatted] = useState("");
   const [versionText, setVersionText] = useState("");
@@ -1334,6 +1347,7 @@ export function DashboardTab({
   const [credentialCount, setCredentialCount] = useState(0);
   const [activeTunnelCount, setActiveTunnelCount] = useState(0);
   const [activity, setActivity] = useState<RecentActivityItem[]>([]);
+  const [activityError, setActivityError] = useState<string | null>(null);
   const [hostMetrics, setHostMetrics] = useState<
     Map<string, { cpu: number | null; ram: number | null; disk: number | null }>
   >(new Map());
@@ -1396,10 +1410,23 @@ export function DashboardTab({
   useEffect(() => {
     let mounted = true;
     const load = async () => {
-      const raw = await getSSHHosts().catch(() => []);
+      let raw;
+      try {
+        raw = await getSSHHosts();
+        if (mounted) setHostsError(null);
+      } catch {
+        if (mounted) {
+          setHostsError("operations.loadError");
+          setHostsLoading(false);
+        }
+        return;
+      }
       const mapped = raw.map(sshHostToHost);
       const statusHosts = mapped.filter(isStatusCheckEnabled);
-      if (mounted) setHosts(mapped);
+      if (mounted) {
+        setHosts(mapped);
+        setHostsLoading(false);
+      }
       if (isVisible) {
         fetchMetrics(statusHosts).catch(() => {});
       }
@@ -1436,9 +1463,18 @@ export function DashboardTab({
       .catch(() => {
         setDbHealth("error");
       });
-    getRecentActivity(50)
-      .then(setActivity)
-      .catch(() => {});
+    const loadActivity = () =>
+      getRecentActivity(50)
+        .then((items) => {
+          if (mounted) {
+            setActivity(items);
+            setActivityError(null);
+          }
+        })
+        .catch(() => {
+          if (mounted) setActivityError("operations.activityError");
+        });
+    loadActivity();
     getCredentials()
       .then((res) =>
         setCredentialCount(
@@ -1467,11 +1503,8 @@ export function DashboardTab({
 
     const metricsInterval = setInterval(async () => {
       if (document.visibilityState === "hidden") return;
-      const raw = await getSSHHosts().catch(() => []);
-      const mapped = raw.map(sshHostToHost);
-      const statusHosts = mapped.filter(isStatusCheckEnabled);
-      if (mounted) setHosts(mapped);
-      fetchMetrics(statusHosts).catch(() => {});
+      await load();
+      await loadActivity();
     }, 30000);
 
     return () => {
@@ -1668,6 +1701,22 @@ export function DashboardTab({
 
   const isMobile = useIsMobile();
 
+  if (dashboardView === "operations") {
+    return (
+      <OperationsConsole
+        hosts={hosts}
+        hostMetrics={hostMetrics}
+        activity={activity}
+        loading={hostsLoading}
+        error={hostsError ? t(hostsError) : null}
+        activityError={activityError ? t(activityError) : null}
+        onOpenTab={onOpenTab}
+        onOpenSingletonTab={onOpenSingletonTab}
+        onCustomize={() => setDashboardView("dashboard")}
+      />
+    );
+  }
+
   if (isMobile) {
     const allSlots = [...mainSlots, ...sideSlots];
     return (
@@ -1675,6 +1724,13 @@ export function DashboardTab({
         <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-3 pt-3 flex flex-col gap-3">
           <Card className="flex-row items-center justify-between px-4 py-3 shrink-0 gap-0">
             <div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setDashboardView("operations")}
+              >
+                {t("operations.title")}
+              </Button>
               <h1 className="text-base font-bold leading-tight">
                 {t("dashboard.title")}
               </h1>
@@ -1827,6 +1883,12 @@ export function DashboardTab({
       <Card className="flex-row items-center justify-between px-5 py-3 shrink-0 mx-5 mt-5 gap-0">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-0 bg-muted/40 border border-border p-0.5">
+            <button
+              onClick={() => setDashboardView("operations")}
+              className="px-3 py-1 text-sm font-medium text-muted-foreground hover:text-foreground"
+            >
+              {t("operations.title")}
+            </button>
             <button
               onClick={() => setDashboardView("dashboard")}
               className={`px-3 py-1 text-sm font-medium transition-colors ${dashboardView === "dashboard" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
